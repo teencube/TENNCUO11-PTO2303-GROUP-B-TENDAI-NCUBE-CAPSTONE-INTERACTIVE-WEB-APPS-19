@@ -17,6 +17,7 @@ const dataSearchTitle = document.querySelector('[data-search-title]');
 created a function for the preview
 a for loop to loop through the books array
 */
+const BOOKS_PER_PAGE = 36;
 const startIndex = 0;
 const endIndex = startIndex + BOOKS_PER_PAGE;
 let extracted = books.slice(0 , 36);
