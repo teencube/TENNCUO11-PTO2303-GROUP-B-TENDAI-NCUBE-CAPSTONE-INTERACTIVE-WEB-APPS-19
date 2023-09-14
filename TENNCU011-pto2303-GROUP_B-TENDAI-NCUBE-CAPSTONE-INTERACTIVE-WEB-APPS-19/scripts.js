@@ -17,35 +17,58 @@ const dataSearchTitle = document.querySelector('[data-search-title]');
 created a function for the preview
 a for loop to loop through the books array
 */
-const BOOKS_PER_PAGE = 36;
-const startIndex = 0;
-const endIndex = startIndex + BOOKS_PER_PAGE;
-let extracted = books.slice(0 , 36);
+const extracted1 = books.slice(0, BOOKS_PER_PAGE);
 let preveiw = "";
+for (let i = 0 ;i < extracted1.length; i++){
+preveiw+= createPreview(extacted1[i]); 
+}  
+document.querySelector('[data-list-iterms').innerHTML = preveiw;
+
 // createPreview funtion
 function createPreview( book) {
- const fragment = document.createDocumentFragment()
- 
- for (let i = startIndex ; endIndex && i < books.length; i++){
-    const {author , image,title,id} = book[i]
-        const book = books[i];  
-
- const html =   `
-    <button class='preview' data-preview='${id}'>
-      <img class='preview_image' src='${Image}' />
+ let html =   `
+    <div class='preview' data-id='${book.id}'data-preview>
+      <img = src'${book.image}'alt="" class="preview_image" 
       <div class='preview_info'>
-        <h3 class='preview_title'>${title}</h3>
-        <div class='preview_author'>${authors[author]}</div>
+        <h3 class='preview_title'>${book.title}</h3>
+        <small class='preview_author'>${authors[book.author]}</small>
       </div>
-    </button>
-  `
-}
-preveiw = createPreview(book);
-fragment.appendChild(preveiw);
+    </div>`;
 
+  return html
 }
-// Call the function
 createPreview(book);
+// Creating genre options
+let genresEl = document.querySelector('[data-search-genres]');
+let genreOption = document.createElement('option');
+genreOption.value = 'any';
+genreOption.innerText = 'All Genres';
+genresEl.appendChild(genreOption);
+
+for (const [id, name] of Object.entries(genres)) {
+    let genreElement = document.createElement('option');
+    genreElement.value = id;
+    genreElement.innerText = name;
+    genresElement.appendChild(genreElement);
+}
+
+// Appending genre options to 'data-search-genres 
+dataSearchGenres.appendChild(genres);
+
+// Creating author options
+let authorsEl = document.querySelector('[data-search-authors');
+authorsOption = document.createElement('option');
+authorsOption.value = 'any';
+authorsOption.innerText = 'All Authors';
+authorsEl.appendChild(authorsOption);
+
+for (const [id, name] of Object.entries(authors)) {
+    let authorsElement = document.createElement('option');
+    authorsElement.value = id;
+    authorsElement.innerText = name;
+    authorsElement.appendChild(authorsElement);
+}
+
 
 // Handling 'data-header-search' click event
 const dataHeaderSearch = document.querySelector('data-header-search'); 
@@ -93,37 +116,6 @@ dataSearchOverlay.open = false;
 const dataListItems = document.querySelector('data-list-items'); // 
 dataListItems.appendChild(fragment);
 
-// Creating genre options
-const genre = document.createDocumentFragment();
-let genreOption = document.createElement('option');
-genreOption.value = 'any';
-genreOption.textContent = 'All Genres';
-genres.appendChild(genreOption);
-
-for (const [id, name] of Object.entries(genres)) {
-    genreElement = document.createElement('option');
-    genreElement.value = id;
-    genreElement.textContent = name;
-    genres.appendChild(genreElement);
-}
-
-// Appending genre options to 'data-search-genres'
-const dataSearchGenres = document.querySelector('data-search-genres'); 
-dataSearchGenres.appendChild(genres);
-
-// Creating author options
-const author = document.createDocumentFragment();
-authorsOption = document.createElement('option');
-authorsOption.value = 'any';
-authorsOption.textContent = 'All Authors';
-authors.appendChild(authorsOption);
-
-for (const [id, name] of Object.entries(authors)) {
-    authorsElement = document.createElement('option');
-    authorsElement.value = id;
-    authorsElement.textContent = name;
-    authors.appendChild(authorsElement);
-}
 
 const dataSearchAuthors = document.querySelector('data-search-authors'); 
 dataSearchAuthors.appendChild(authors);
@@ -146,7 +138,7 @@ dataSearchForm.addEventListener('submit', (event) => {
     
 // Handling 'data-list-items' click event
 dataListItems.addEventListener('click', (event) => {
-    const pathArray = Array.from(event.path || event.composedPath());
+    let pathArray = Array.from(event.path || event.composedPath());
     let active = "";
 
 
