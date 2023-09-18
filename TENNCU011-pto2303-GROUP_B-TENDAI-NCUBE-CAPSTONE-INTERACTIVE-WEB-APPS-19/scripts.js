@@ -111,6 +111,10 @@ const dataListButton = document.querySelector('data-list-button');
 
 
 // Sets "Show more" button text and disable it if needed
+dataListButton.innerHTML =
+  '<span>Show more</span>',
+  '<span class="list__remaining"> (${matches.length - [page * BOOKS_PER_PAGE] > 0 ? matches.length - [page * BOOKS_PER_PAGE] : 0})</span>',
+
 dataListButton.textContent = `Show more (${books.length - page * BOOKS_PER_PAGE > 0 ? books.length - page * BOOKS_PER_PAGE : 0})`;
 dataListButton.disabled = !(books.length - page * BOOKS_PER_PAGE > 0);
 
@@ -121,7 +125,7 @@ dataListButton.addEventListener('click', () => {
     dataListItems.appendChild(previewsFragment);
     page += 1;
     // Updates button text and disable state
-    dataListButton.textContent = `Show more (${books.length - page * BOOKS_PER_PAGE > 0 ? books.length - page * BOOKS_PER_PAGE : 0})`;
+    dataListButton.innerText = `Show more (${books.length - page * BOOKS_PER_PAGE > 0 ? books.length - page * BOOKS_PER_PAGE : 0})`;
     dataListButton.disabled = !(books.length - page * BOOKS_PER_PAGE > 0);
 });
 
