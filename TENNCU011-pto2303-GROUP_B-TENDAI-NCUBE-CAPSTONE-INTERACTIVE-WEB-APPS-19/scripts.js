@@ -24,8 +24,7 @@ const night = {
 };
 
 const fragment = document.createDocumentFragment();
-const extracted = books.slice(0, BOOKS_PER_PAGE);
-
+let extracted = books.slice(0, BOOKS_PER_PAGE);
 
 function createPreview(book) {
   const element = document.createElement('div');
@@ -44,7 +43,7 @@ function createPreview(book) {
 
   const author = document.createElement('div');
   author.classList.add('preview__author');
-  author.textContent = book.author;
+  author.textContent = authors[book.author];
 
   info.appendChild(title);
   info.appendChild(author);
@@ -59,13 +58,57 @@ function createPreview(book) {
 
 //  Loop to create and append book previews
 for (const book of extracted) {
-    const preview = createPreview(book);
+     preview = createPreview(book);
     fragment.appendChild(preview);
 }
 
 
 const dataListItems = document.querySelector('[data-list-items]'); 
 dataListItems.appendChild(fragment);
+
+// Function to get remaining books 
+
+function getBooksRemaining() {
+        // Updates the page and check if there are more books
+        page++
+      const remainingBooks = books.length - BOOKS_PER_PAGE;
+  const dataListButton = document.querySelector('[data-list-button]');
+  const remainingCount = books.length - (page * BOOKS_PER_PAGE);
+  
+    
+   dataListButton.innerHTML = `<span>Show more</span><span class="list__remaining"> (${remainingCount > 0 ? remainingCount : 0})</span>`;
+     
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+      const fragment = document.createDocumentFragment();
+    
+      for (const { author, image, title, id } of extracted) {
+         preview = createPreview({ author, image, title, id });
+        fragment.appendChild(preview);
+      }
+
+    
+
+
+      return remainingBooks
+    }
+    
+getBooksRemaining();
+
+dataListButton.addEventListener('click',() => {
+getBooksRemaining()
+    
+});
+    
+// Function to create a fragment with book previews
+function createPreviewsFragment() {
+    const fragment = document.createDocumentFragment();
+    for (const book of books) {
+         preview = createPreview(book);
+        fragment.appendChild(preview);
+    }
+    return fragment;
+}
 
 const genresEl = document.createDocumentFragment();
 let genresOption = document.createElement('option');
@@ -108,26 +151,7 @@ document.documentElement.style.setProperty('--color-dark', theme === 'night' ? n
 document.documentElement.style.setProperty('--color-light', theme === 'night' ? night.light : day.light);
 
 const dataListButton = document.querySelector('data-list-button'); 
-
-
-// Sets "Show more" button text and disable it if needed
-dataListButton.innerHTML =
-  '<span>Show more</span>',
-  '<span class="list__remaining"> (${matches.length - [page * BOOKS_PER_PAGE] > 0 ? matches.length - [page * BOOKS_PER_PAGE] : 0})</span>',
-
-dataListButton.textContent = `Show more (${books.length - page * BOOKS_PER_PAGE > 0 ? books.length - page * BOOKS_PER_PAGE : 0})`;
-dataListButton.disabled = !(books.length - page * BOOKS_PER_PAGE > 0);
-
-dataListButton.addEventListener('click', () => {
-    //  Implements "Show more" button functionality
-    const remainingBooks = getBooksRemaining(books, page, BOOKS_PER_PAGE);
-    const previewsFragment = createPreviewsFragment(remainingBooks);
-    dataListItems.appendChild(previewsFragment);
-    page += 1;
-    // Updates button text and disable state
-    dataListButton.innerText = `Show more (${books.length - page * BOOKS_PER_PAGE > 0 ? books.length - page * BOOKS_PER_PAGE : 0})`;
-    dataListButton.disabled = !(books.length - page * BOOKS_PER_PAGE > 0);
-});
+dataListButton.addEventListener('click', getBooksRemaining());
 
 const dataHeaderSearch = document.querySelector('[data-header-search]'); 
 
@@ -184,7 +208,7 @@ dataListItems.addEventListener('click', (event) => {
         if (activeBook) break;
     }
 
-    // User Story 14: Display book details
+    //  Displays book details
     if (activeBook) {
         const dataListActive = document.querySelector('[data-list-active]'); 
         dataListActive.open = true;
@@ -199,35 +223,20 @@ dataListItems.addEventListener('click', (event) => {
     }
 });
 
-// Function to get remaining books based on the current page
-function getBooksRemaining(books, page, booksPerPage) {
-    const startIndex = (page - 1) * booksPerPage;
-    const endIndex = startIndex + booksPerPage;
-    return books.slice(startIndex, endIndex);
-}
 
-// Function to create a fragment with book previews
-function createPreviewsFragment(books) {
-    const fragment = document.createDocumentFragment();
-    for (const book of books) {
-        const preview = createPreview(book);
-        fragment.appendChild(preview);
-    }
-    return fragment;
-}
 
 // Function to filter books based on search criteria
-function filterBooks(books, filters) {
+function filterBooks() {
     return books.filter((book) => {
         const titleMatch = filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase());
-        const authorMatch = filters.author === 'any' || book.author === filters.author;
-        const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
+        const authorMatch = filters.author === 'any' || authors[book.author] === filters.author;
+        const genreMatch = filters.genre === 'any' || genres[book.genres].includes(filters.genre);
         return titleMatch && authorMatch && genreMatch;
     });
 }
 
 // Function to display filtered books
-function displayBooks(books) {
+function displayBooks() {
     const dataListItems = document.querySelector('[data-list-items]'); 
     dataListItems.innerHTML = '';
     const previewsFragment = createPreviewsFragment(books);
