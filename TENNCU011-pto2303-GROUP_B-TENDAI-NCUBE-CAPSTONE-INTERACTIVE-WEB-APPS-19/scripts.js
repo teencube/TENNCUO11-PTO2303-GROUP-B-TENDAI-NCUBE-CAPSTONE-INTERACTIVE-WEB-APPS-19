@@ -69,39 +69,34 @@ dataListItems.appendChild(fragment);
 // Function to get remaining books 
 
 function getBooksRemaining() {
-        // Updates the page and check if there are more books
-        page++
-      const remainingBooks = books.length - BOOKS_PER_PAGE;
-  const dataListButton = document.querySelector('[data-list-button]');
+    // Updates the page and check if there are more books
+    page++
+        const startIndex = (page - 1) * BOOKS_PER_PAGE;
+    const endIndex = startIndex + BOOKS_PER_PAGE
+    const remainingBooks = books.slice(startIndex , endIndex);  
   const remainingCount = books.length - (page * BOOKS_PER_PAGE);
-  
-    
+   
+  const dataListButton = document.querySelector('[data-list-button]');
+  const fragment = createPreviewsFragment(books , startIndex , endIndex);
    dataListButton.innerHTML = `<span>Show more</span><span class="list__remaining"> (${remainingCount > 0 ? remainingCount : 0})</span>`;
      
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 
-      const fragment = document.createDocumentFragment();
-    
-      for (const { author, image, title, id } of extracted) {
-         preview = createPreview({ author, image, title, id });
-        fragment.appendChild(preview);
-      }
-
-    
-
-
       return remainingBooks
+      
+      
     }
-    
 getBooksRemaining();
 
+
 dataListButton.addEventListener('click',() => {
-getBooksRemaining()
+    remainingBooks - BOOKS_PER_PAGE  
+getBooksRemaining();
     
 });
     
 // Function to create a fragment with book previews
-function createPreviewsFragment() {
+function createPreviewsFragment(bookks) {
     const fragment = document.createDocumentFragment();
     for (const book of books) {
          preview = createPreview(book);
@@ -235,20 +230,13 @@ function filterBooks() {
     });
 }
 
-// Function to display filtered books
-function displayBooks() {
-    const dataListItems = document.querySelector('[data-list-items]'); 
-    dataListItems.innerHTML = '';
-    const previewsFragment = createPreviewsFragment(books);
-    dataListItems.appendChild(previewsFragment);
-}
 
 // Function to update the theme
 function updateTheme(theme) {
     const day = {
         dark: '10, 10, 20',
         light: '255, 255, 255',
-    };
+    }; 
 
     const night = {
         dark: '255, 255, 255',
