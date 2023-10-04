@@ -96,7 +96,7 @@ getBooksRemaining();
 });
     
 // Function to create a fragment with book previews
-function createPreviewsFragment(bookks) {
+function createPreviewsFragment(books) {
     const fragment = document.createDocumentFragment();
     for (const book of books) {
          preview = createPreview(book);
